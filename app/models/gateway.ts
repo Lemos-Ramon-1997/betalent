@@ -1,16 +1,16 @@
-import { BaseModel, column } from '@adonisjs/lucid/orm'
+import { BaseModel, column } from '@adonisjs/lucid/orm';
 
 export default class Gateway extends BaseModel {
   @column({ isPrimary: true })
-  declare id: number
+  declare id: number;
 
   @column()
-  declare name: string
+  declare name: string;
 
   @column()
-  declare is_active: boolean
+  declare is_active: boolean;
 
   @column()
-  declare priority: number
+  declare priority: number;
 }
 
