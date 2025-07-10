@@ -12,7 +12,10 @@ export default class ClientRepository {
 
   async findOrFail(id: number) {
     try {
-      const client = await Client.find(id);
+      const client = await Client.query()
+        .where('id', id)
+        .preload('transactions')
+        .first();
       if (!client) {
         throw new ErrorResponse('Cliente não encontrado', 404);
       }
