@@ -3,6 +3,7 @@ import '../app/modules/auth/routes/auth_routes.js';
 import '../app/modules/gateway/routes/gateway_routes.js';
 import '../app/modules/client/routes/client_routes.js';
 import '../app/modules/product/routes/product_routes.js';
+import '../app/modules/transaction/routes/transaction_routes.js';
 
 import router from '@adonisjs/core/services/router';
 

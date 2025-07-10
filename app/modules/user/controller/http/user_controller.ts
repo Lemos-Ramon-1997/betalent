@@ -39,7 +39,7 @@ export default class UserController {
 
   async show({ request }: HttpContext) {
     try {
-      const { id = null } = request.only(['id']);
+      const { id } = request.only(['id']);
       return await userService.findOrFail(id);
     } catch (err) {
       if (err instanceof ErrorResponse) {
