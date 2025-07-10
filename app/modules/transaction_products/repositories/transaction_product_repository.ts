@@ -1,5 +1,5 @@
 import TransactionProduct from '#models/transaction_product'
-import ErrorResponse from '../../../../utils/error/error_handler.js';
+import ErrorResponse from '../../../utils/error/error_handler.js';
 
 export default class TransactionProductRepository {
   public async create(data: Partial<TransactionProduct>) {
