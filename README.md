@@ -1,19 +1,14 @@
-# Projeto AdonisJS - Autenticação com Docker
 
-Este projeto é uma API de autenticação construída com AdonisJS, utilizando Docker para facilitar o ambiente de desenvolvimento.
+# BeTalent Tech - Sistema Multi-Gateway (AdonisJS)
 
-## Funcionalidades
-- Cadastro de usuário (register)
-- Login de usuário (login)
-- Logout
-- Consulta de usuário autenticado (me)
-- Validação de dados com VineJS
+API RESTful para gerenciamento de pagamentos multi-gateway, clientes, produtos e usuários, com autenticação, roles, fallback de gateways e integração pronta para TDD e Docker Compose.
 
-## Requisitos
+## 🚀 Requisitos
 - Node.js >= 18
 - Docker e Docker Compose
+- MySQL
 
-## Como rodar o projeto
+## 📦 Como rodar o projeto
 
 1. **Clone o repositório:**
    ```powershell
@@ -21,7 +16,7 @@ Este projeto é uma API de autenticação construída com AdonisJS, utilizando D
    cd <nome-da-pasta>
    ```
 
-2. **Suba os containers Docker:**
+2. **Suba o ambiente Docker:**
    ```powershell
    docker-compose up -d
    ```
@@ -46,16 +41,83 @@ Este projeto é uma API de autenticação construída com AdonisJS, utilizando D
    node ace serve --watch
    ```
 
-## Rotas principais
+## 🗄 Estrutura do Banco de Dados
 
-- `POST /register` - Cadastro de usuário
-- `POST /login` - Login de usuário
-- `POST /logout` - Logout
-- `GET /me` - Dados do usuário autenticado
+- users: email, password, role
+- gateways: name, is_active, priority
+- clients: name, email
+- products: name, amount
+- transactions: client, gateway, external_id, status, amount, card_last_numbers
+- transaction_products: transaction_id, product_id, quantity
 
-## Observações
-- Para criar usuários manualmente no banco, lembre-se de hashear a senha.
-- O token de acesso é gerado no login ou cadastro.
+## 🛣 Rotas do Sistema
 
-## Licença
+### Rotas Públicas
+- `POST /login` — Login de usuário
+- `POST /transactions` — Realizar uma compra (multi-gateway)
+
+### Rotas Privadas (JWT)
+- `GET /users` — Listar usuários (ADMIN, MANAGER)
+- `POST /users` — Criar usuário (ADMIN, MANAGER)
+- `PUT /users/:id` — Atualizar usuário (ADMIN, MANAGER)
+- `DELETE /users/:id` — Remover usuário (ADMIN)
+- `GET /products` — Listar produtos (ADMIN, MANAGER, FINANCE)
+- `POST /products` — Criar produto (ADMIN, MANAGER, FINANCE)
+- `PUT /products/:id` — Atualizar produto (ADMIN, MANAGER, FINANCE)
+- `DELETE /products/:id` — Remover produto (ADMIN, MANAGER)
+- `GET /clients` — Listar clientes (ADMIN, MANAGER, FINANCE)
+- `GET /clients/:id` — Detalhe do cliente + compras (ADMIN, MANAGER, FINANCE)
+- `GET /transactions` — Listar todas as compras (ADMIN, MANAGER, FINANCE)
+- `GET /transactions/:id` — Detalhes de uma compra (ADMIN, MANAGER, FINANCE)
+- `POST /transactions/:id/refund` — Reembolso (FINANCE)
+- `PATCH /gateways/:id/activate` — Ativar/desativar gateway (ADMIN)
+- `PATCH /gateways/:id/priority` — Alterar prioridade do gateway (ADMIN)
+
+> Todas as rotas privadas exigem autenticação e validação de role.
+
+## 🛡️ Roles
+
+- **ADMIN**: acesso total
+- **MANAGER**: gerencia produtos e usuários
+- **FINANCE**: gerencia produtos e realiza reembolso
+- **USER**: acesso restrito ao próprio uso
+
+## 🧪 Testes
+
+```powershell
+npm run test
+```
+
+## 🐳 Docker Compose
+
+O projeto já inclui um `docker-compose.yml` com:
+- MySQL
+- Aplicação Node.js
+- Mocks dos gateways (ajuste as portas/endpoints conforme necessário)
+
+## 🛠️ Comandos Úteis
+
+```powershell
+# Rodar migrations
+node ace migration:run
+
+# Reverter migrations
+node ace migration:rollback
+
+# Rodar seeders
+node ace db:seed
+
+# Iniciar servidor em modo dev
+node ace serve --watch
+```
+
+## 📚 Observações
+
+- Todas as validações são feitas com VineJS.
+- Mensagens de erro são retornadas em português.
+- O sistema está pronto para adicionar novos gateways de forma modular.
+- O fallback entre gateways segue a ordem de prioridade configurada.
+
+---
+
 MIT
