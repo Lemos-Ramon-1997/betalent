@@ -35,7 +35,7 @@ export default class TransactionController {
 
     async store({ request }: HttpContext) {
         try {
-            helper.checkRequiredParams(request, ['amount', 'name', 'email', 'cardNumber', 'cvv', 'products']);
+            helper.checkRequiredParams(request, ['name', 'email', 'cardNumber', 'cvv', 'products']);
             const data = await request.validateUsing(transactionStoreValidator);
             return await transactionService.processPurchase(data, data.products);
         } catch (err: any) {

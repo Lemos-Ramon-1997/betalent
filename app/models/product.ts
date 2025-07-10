@@ -10,6 +10,9 @@ export default class Product extends BaseModel {
   @column()
   declare amount: number;
 
+  @column()
+  declare price: number;
+
 
 }
 
