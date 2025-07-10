@@ -2,7 +2,8 @@ import type { HttpContext } from '@adonisjs/core/http';
 import ProductService from '../../services/product_service.js';
 import ErrorResponse from '../../../../utils/error/error_handler.js';
 import logger from '@adonisjs/core/services/logger';
-import * as helper from '../../../../utils/helper/helper.js';
+import { productStoreValidator, productUpdateValidator } from '../../validators/product_validator.js';
+import { translateVineMessages } from '../../../../utils/translate_vine_messages.js';
 
 
 const productService = new ProductService();
@@ -23,22 +24,24 @@ export default class ProductController {
 
   async store({ request }: HttpContext) {
     try {
-      helper.checkRequiredParams(request, ['name', 'amount']);
-      const data = request.only(['name', 'amount']);
+      const data = await request.validateUsing(productStoreValidator);
       return await productService.create(data);
-    } catch (err) {
+    } catch (err: any) {
       logger.error('Error creating product:', err);
+      if (err?.status === 422 && err?.code === 'E_VALIDATION_ERROR') {
+        const mensagens = translateVineMessages(err.messages);
+        throw new ErrorResponse(mensagens, 422);
+      }
       if (err instanceof ErrorResponse) {
         throw err;
       } else {
-        throw new ErrorResponse('Erro interno')
+        throw new ErrorResponse('Erro interno');
       }
     }
   }
 
   async show({ request }: HttpContext) {
     try {
-      helper.checkRequiredParams(request, ['id']);
       const { id } = request.only(['id']);
       return await productService.findOrFail(id);
     } catch (err) {
@@ -52,13 +55,14 @@ export default class ProductController {
 
   async update({ request }: HttpContext) {
     try {
-      helper.checkRequiredParams(request, ['id']);
-      const { id, name, amount } = request.all();
-      const updateFields = Object.fromEntries(
-        Object.entries({ name, amount }).filter(([_, value]) => value)
-      );
+      const data = await request.validateUsing(productUpdateValidator);
+      const { id, ...updateFields } = data;
       return await productService.update(id, updateFields);
-    } catch (err) {
+    } catch (err: any) {
+      if (err?.status === 422 && err?.code === 'E_VALIDATION_ERROR') {
+        const mensagens = translateVineMessages(err.messages);
+        throw new ErrorResponse(mensagens, 422);
+      }
       if (err instanceof ErrorResponse) {
         throw err;
       } else {

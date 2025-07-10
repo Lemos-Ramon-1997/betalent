@@ -2,7 +2,8 @@ import type { HttpContext } from '@adonisjs/core/http'
 import GatewayService from '../../services/gateway_service.js'
 import ErrorResponse from '../../../../utils/error/error_handler.js'
 import logger from '@adonisjs/core/services/logger'
-import * as helper from '../../../../utils/helper/helper.js'
+import { gatewayStoreValidator, gatewayUpdateValidator } from '../../validators/gateway_validator.js'
+import { translateVineMessages } from '../../../../utils/translate_vine_messages.js'
 
 const gatewayService = new GatewayService()
 
@@ -22,22 +23,24 @@ export default class GatewayController {
 
   async store({ request }: HttpContext) {
     try {
-      helper.checkRequiredParams(request, ['name', 'is_active', 'priority']);
-      const data = request.only(['name', 'is_active', 'priority']);
+      const data = await request.validateUsing(gatewayStoreValidator);
       return await gatewayService.create(data);
-    } catch (err) {
+    } catch (err: any) {
       logger.error('Error creating gateway:', err);
+      if (err?.status === 422 && err?.code === 'E_VALIDATION_ERROR') {
+        const mensagens = translateVineMessages(err.messages);
+        throw new ErrorResponse(mensagens, 422);
+      }
       if (err instanceof ErrorResponse) {
         throw err;
       } else {
-        throw new ErrorResponse('Erro interno')
+        throw new ErrorResponse('Erro interno');
       }
     }
   }
 
   async show({ request }: HttpContext) {
     try {
-      helper.checkRequiredParams(request, ['id']);
       const { id } = request.only(['id']);
       return await gatewayService.findOrFail(id);
     } catch (err) {
@@ -51,16 +54,14 @@ export default class GatewayController {
 
   async update({ request }: HttpContext) {
     try {
-      helper.checkRequiredParams(request, ['id']);
-      const { id, name, is_active, priority } = request.all();
-      let updateFields = Object.fromEntries(
-        Object.entries({ name, priority }).filter(([_, value]) => value !== undefined && value !== null)
-      );
-      if (is_active === true || is_active === false) {
-        updateFields.is_active = is_active;
-      }
+      const data = await request.validateUsing(gatewayUpdateValidator);
+      const { id, ...updateFields } = data;
       return await gatewayService.update(id, updateFields);
-    } catch (err) {
+    } catch (err: any) {
+      if (err?.status === 422 && err?.code === 'E_VALIDATION_ERROR') {
+        const mensagens = translateVineMessages(err.messages);
+        throw new ErrorResponse(mensagens, 422);
+      }
       if (err instanceof ErrorResponse) {
         throw err;
       } else {
