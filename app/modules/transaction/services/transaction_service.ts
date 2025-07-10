@@ -1,8 +1,18 @@
 import TransactionRepository from '../repositories/transaction_repository.js';
-
+import ProductRepository from '../../product/repositories/product_repository.js';
 
 export default class TransactionService {
   private repository = new TransactionRepository();
+  private productRepository = new ProductRepository();
+
+  public async processPurchase(data: any, productsFound: any[]) {
+    try {
+        await this.productRepository.findAllOrFail(productsFound.map(p => p.id));
+        return { message: 'Lógica de compra a implementar', data, productsFound };
+    } catch (err) {
+        throw err;
+    }
+  }
 
   public async create(data: any) {
     try {

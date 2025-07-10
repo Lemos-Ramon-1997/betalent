@@ -2,6 +2,18 @@ import Product from '#models/product';
 import ErrorResponse from '../../../utils/error/error_handler.js';
 
 export default class ProductRepository {
+  async findAllOrFail(ids: number[]) {
+    try {
+      const products = await Product.query().whereIn('id', ids);
+      if (products.length !== ids.length) {
+        throw new ErrorResponse('Um ou mais produtos não foram encontrados', 404);
+      } 
+      return products;
+    } catch (err) {
+      throw err;
+    }
+  }
+  
   async all() {
     try {
       return await Product.all() ?? [];
