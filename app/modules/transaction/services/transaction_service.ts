@@ -1,5 +1,6 @@
 import TransactionRepository from '../repositories/transaction_repository.js';
 import ProductRepository from '../../product/repositories/product_repository.js';
+import axios from 'axios';
 
 export default class TransactionService {
   private repository = new TransactionRepository();
@@ -37,4 +38,7 @@ export default class TransactionService {
       throw err;
     }
   }
+
+
+
 }
