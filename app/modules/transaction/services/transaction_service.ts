@@ -7,8 +7,8 @@ export default class TransactionService {
 
   public async processPurchase(data: any, productsFound: any[]) {
     try {
-        await this.productRepository.findAllOrFail(productsFound.map(p => p.id));
-        return { message: 'Lógica de compra a implementar', data, productsFound };
+        await this.productRepository.findAllOrFail(productsFound.map(p => p.product_id));
+        
     } catch (err) {
         throw err;
     }

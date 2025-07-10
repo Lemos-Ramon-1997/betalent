@@ -21,6 +21,7 @@ export default class TransactionController {
 
     async show({ request }: HttpContext) {
         try {
+            helper.checkRequiredParams(request, ['id']);
             const { id } = request.only(['id']);
             return await transactionService.findById(id);
         } catch (err) {
@@ -34,7 +35,7 @@ export default class TransactionController {
 
     async store({ request }: HttpContext) {
         try {
-            await helper.checkRequiredParams(request, ['amount', 'name', 'email', 'cardNumber', 'cvv', 'products']);
+            helper.checkRequiredParams(request, ['amount', 'name', 'email', 'cardNumber', 'cvv', 'products']);
             const data = await request.validateUsing(transactionStoreValidator);
             return await transactionService.processPurchase(data, data.products);
         } catch (err: any) {

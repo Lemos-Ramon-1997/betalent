@@ -5,7 +5,7 @@ export default class ProductRepository {
   async findAllOrFail(ids: number[]) {
     try {
       const products = await Product.query().whereIn('id', ids);
-      if (products.length !== ids.length) {
+      if (Array.isArray(products) && products.length !== ids.length) {
         throw new ErrorResponse('Um ou mais produtos não foram encontrados', 404);
       } 
       return products;
@@ -13,7 +13,7 @@ export default class ProductRepository {
       throw err;
     }
   }
-  
+
   async all() {
     try {
       return await Product.all() ?? [];
