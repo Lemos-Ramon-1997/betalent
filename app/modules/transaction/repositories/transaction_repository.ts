@@ -12,7 +12,10 @@ export default class TransactionRepository {
 
   async findById(id: number) {
     try {
-      return await Transaction.find(id);
+      return await Transaction.query()
+        .where('id', id)
+        .preload('products')
+        .preload('clientModel');
     } catch (err) {
       throw new ErrorResponse('Erro ao buscar transação', 500);
     }
@@ -20,7 +23,7 @@ export default class TransactionRepository {
 
   async all() {
     try {
-      return await Transaction.all();
+      return await Transaction.query().preload('products').preload('clientModel');
     } catch (err) {
       throw new ErrorResponse('Erro ao listar transações', 500);
     }

@@ -1,6 +1,7 @@
-import { BaseModel, column, manyToMany } from '@adonisjs/lucid/orm';
+import { BaseModel, column, manyToMany, belongsTo } from '@adonisjs/lucid/orm';
 import { DateTime } from 'luxon';
 import Product from './product.js';
+import Client from './client.js';
 export default class Transaction extends BaseModel {
   @column({ isPrimary: true })
   public id!: number;
@@ -34,5 +35,11 @@ export default class Transaction extends BaseModel {
     pivotRelatedForeignKey: 'product_id',
   })
   public products: any;
+
+  
+  @belongsTo(() => Client, {
+    foreignKey: 'client',
+  })
+  public clientModel: any;
 
 }
