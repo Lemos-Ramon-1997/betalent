@@ -50,4 +50,12 @@ export default class GatewayRepository {
         throw err;
     }
   }
+
+  async getActiveOrdered() {
+    try {
+      return await Gateway.query().where('is_active', true).orderBy('priority', 'asc');
+    } catch (err) {
+      throw new ErrorResponse('Erro ao buscar gateways ativos', 500);
+    }
+  }
 }
