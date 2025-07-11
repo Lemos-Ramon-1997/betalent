@@ -1,0 +1,109 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "BeTalent Multi-Gateway Payment API",
+    "version": "1.0.0",
+    "description": "API RESTful para gerenciamento de pagamentos multi-gateway."
+  },
+  "paths": {
+    "/auth/login": {
+      "post": {
+        "summary": "Realizar login",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": { "type": "string" },
+                  "password": { "type": "string" }
+                },
+                "required": ["email", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Login realizado com sucesso" },
+          "401": { "description": "Credenciais inválidas" }
+        }
+      }
+    },
+    "/transactions": {
+      "get": {
+        "summary": "Listar todas as compras",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Lista de transações" }
+        }
+      },
+      "post": {
+        "summary": "Realizar compra",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "products": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "product_id": { "type": "integer" },
+                        "quantity": { "type": "integer" }
+                      },
+                      "required": ["product_id", "quantity"]
+                    }
+                  },
+                  "name": { "type": "string" },
+                  "email": { "type": "string" },
+                  "cardNumber": { "type": "string" },
+                  "cvv": { "type": "string" }
+                },
+                "required": ["products", "name", "email", "cardNumber", "cvv"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Compra realizada com sucesso" },
+          "422": { "description": "Erro de validação" }
+        }
+      }
+    },
+    "/transactions/{id}": {
+      "get": {
+        "summary": "Detalhes de uma compra",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }],
+        "responses": {
+          "200": { "description": "Detalhes da transação" },
+          "404": { "description": "Transação não encontrada" }
+        }
+      }
+    },
+    "/transactions/{id}/refund": {
+      "post": {
+        "summary": "Realizar reembolso de uma compra",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }],
+        "responses": {
+          "200": { "description": "Reembolso realizado com sucesso" },
+          "403": { "description": "Acesso negado por roles" },
+          "404": { "description": "Transação não encontrada" }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  }
+}
