@@ -71,17 +71,15 @@ export default class TransactionService {
                 'gateway 1': gatewayService.refund_gateway_1,
                 'gateway 2': gatewayService.refund_gateway_2,
             };
-            console.log('teste')
             const handler = refundHandlers[transaction.gatewayModel.name.trim().toLowerCase()];
             if (!handler) {
                 throw new ErrorResponse('Gateway de reembolso não suportado', 400);
             }
             const result = await handler(transaction.external_id);
-            //transaction.status = 'reembolsado';
-            //await transaction.save();
+            await repository.update(transactionId, { status: 'reembolsado' });
             return { message: 'Reembolso realizado com sucesso', result };
         } catch (err) {
-            throw new ErrorResponse('Erro ao processar reembolso', 500);
+            throw err;
         }
     }
 

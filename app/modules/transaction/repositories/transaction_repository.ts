@@ -33,4 +33,15 @@ export default class TransactionRepository {
       throw new ErrorResponse('Erro ao listar transações', 500);
     }
   }
+
+  async update(id: number, data: Partial<Transaction>) {
+    try {
+      const transaction = await this.findById(id);
+      transaction.merge(data);
+      await transaction.save();
+      return transaction;
+    } catch (err) {
+      throw new ErrorResponse('Erro ao atualizar transação', 500);
+    }
+  }
 }
