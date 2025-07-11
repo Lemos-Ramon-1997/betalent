@@ -15,7 +15,9 @@ export default class ClientRepository {
       const client = await Client.query()
         .where('id', id)
         .preload('transactions', (transactionQuery) => {
-          transactionQuery.preload('products');
+          transactionQuery.preload('transactionProducts', (transactionProductQuery) => {
+            transactionProductQuery.preload('product');
+          });
         })
         .first();
       if (!client) {
