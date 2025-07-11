@@ -23,7 +23,7 @@ export default class ProductController {
 
   async store({ request }: HttpContext) {
     try {
-      helper.checkRequiredParams(request, ['name', 'description', 'price']);
+      helper.checkRequiredParams(request, ['name', 'amount', 'price']);
       const data = await request.validateUsing(productStoreValidator);
       return await productService.create(data);
     } catch (err: any) {

@@ -1,5 +1,5 @@
-import { BaseModel, column } from '@adonisjs/lucid/orm';
-
+import { BaseModel, column, } from '@adonisjs/lucid/orm';
+import { DateTime } from 'luxon';
 export default class Transaction extends BaseModel {
   @column({ isPrimary: true })
   public id!: number;
@@ -21,4 +21,8 @@ export default class Transaction extends BaseModel {
 
   @column()
   public card_last_numbers!: string;
+
+  @column.dateTime({ autoCreate: true })
+  declare created_at: DateTime;
+
 }
