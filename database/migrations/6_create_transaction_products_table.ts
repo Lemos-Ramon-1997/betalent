@@ -9,7 +9,7 @@ export default class extends BaseSchema {
       table.integer('transaction_id').unsigned().notNullable().references('id').inTable('transactions')
       table.integer('product_id').unsigned().notNullable().references('id').inTable('products')
       table.integer('quantity').unsigned().notNullable()
-      table.timestamps(true)
+      table.timestamp('created_at').notNullable()
     })
   }
 

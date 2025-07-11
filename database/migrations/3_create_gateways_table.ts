@@ -10,7 +10,6 @@ export default class extends BaseSchema {
       table.boolean('is_active').notNullable().defaultTo(true)
       table.integer('priority').notNullable()
       table.timestamp('created_at').notNullable().defaultTo(this.now())
-      table.timestamp('updated_at').notNullable().defaultTo(this.now())
     })
   }
 

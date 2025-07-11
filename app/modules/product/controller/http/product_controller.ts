@@ -26,7 +26,8 @@ export default class ProductController {
       helper.checkRequiredParams(request, ['name', 'amount', 'price']);
       const data = await request.validateUsing(productStoreValidator);
       return await productService.create(data);
-    } catch (err: any) {
+    } catch (err) {
+      console.error(err);
       if (err?.status === 422 && err?.code === 'E_VALIDATION_ERROR') {
         const mensagens = translateVineMessages(err.messages);
         throw new ErrorResponse(mensagens, 422);

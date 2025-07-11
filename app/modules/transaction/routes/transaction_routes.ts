@@ -4,7 +4,7 @@ import { middleware } from '../../../../start/kernel.js'
 
 
 router.group(() => {
-  router.get('/', [TransactionController, 'index'])
-  router.post('/show', [TransactionController, 'show'])
+  router.get('/', [TransactionController, 'index']).use(middleware.auth())
+  router.post('/show', [TransactionController, 'show']).use(middleware.auth())
     router.post('/store', [TransactionController, 'store'])
-}).prefix('/transactions').use(middleware.auth())
+}).prefix('/transactions')
