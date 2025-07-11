@@ -17,13 +17,13 @@ API RESTful para gerenciamento de pagamentos multi-gateway, clientes, produtos e
 
 2. **Rode as migrations:**
    ```powershell
-   node ace migration:run
+   docker exec -it adonis_app node ace migration:run
    ```
 
 3. **(Opcional) Rode os seeders:**
    > Este comando irá adicionar os gateways, dois produtos e um cliente de exemplo.
    ```powershell
-   node ace db:seed
+   docker exec -it adonis_app node ace db:seed
    ```
 
 

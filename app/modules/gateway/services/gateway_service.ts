@@ -106,6 +106,7 @@ export default class GatewayService {
 
   async gateway_1(data: CreateTransactionDTO) {
     try {
+      console.log('Creating transaction in Gateway 1', process.env.GATEWAY1_URL)
       const GATEWAY1_URL = process.env.GATEWAY1_URL;
       const GATEWAY1_LOGIN = process.env.GATEWAY1_LOGIN;
       const GATEWAY1_TRANSACTIONS = process.env.GATEWAY1_TRANSACTIONS;

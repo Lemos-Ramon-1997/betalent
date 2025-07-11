@@ -55,6 +55,8 @@ services:
       DB_USER: root
       DB_PASSWORD: talent
       DB_DATABASE: app
+      GATEWAY1_URL: http://gateways-mock:3001
+      GATEWAY2_URL: http://gateways-mock:3002
     # volumes:
     #   - ./:/app  
     #   - /app/node_modules  
