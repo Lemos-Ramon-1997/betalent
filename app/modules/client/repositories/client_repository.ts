@@ -25,6 +25,18 @@ export default class ClientRepository {
     }
   }
 
+  async findByEmail(email: string) {
+    try {
+      const client = await Client.query().where('email', email).first();
+      if (!client) {
+        throw new ErrorResponse('Cliente não encontrado', 404);
+      }
+      return client;
+    } catch (err) {
+      throw err;
+    }
+  }
+
   async create(data: Partial<Client>) {
     try {
       return await Client.create(data);

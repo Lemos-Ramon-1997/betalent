@@ -4,6 +4,7 @@ import GatewayRepository from '../../gateway/repositories/gateway_repository.js'
 import ErrorResponse from '../../../utils/error/error_handler.js';
 import GatewayService from '../../gateway/services/gateway_service.js';
 import ClientRepository from '../../client/repositories/client_repository.js';
+import TransactionProductRepository from '../../transaction_products/repositories/transaction_product_repository.js';
 
 export interface TransactionProduct {
   product_id: number;
@@ -17,17 +18,25 @@ export interface CreateTransactionDTO {
   cardNumber: string;
   cvv: string;
   products: TransactionProduct[];
+  client_id?: number;
 }
 
 const repository = new TransactionRepository();
 const productRepository = new ProductRepository();
 const gatewayRepository = new GatewayRepository();
+const clientRepository = new ClientRepository();
+const transactionProductRepository = new TransactionProductRepository();
+
 const gatewayService = new GatewayService();
 export default class TransactionService {
     async processPurchase(data: CreateTransactionDTO, productsFound: any[]) {
         try {
             const products = await productRepository.findAllOrFail(productsFound.map(p => p.product_id));
-            const client = await 
+            const client = await clientRepository.findByEmail(data.email);
+            if (!client) {
+                throw new ErrorResponse('Cliente não encontrado, por favor verifique os dados informados.', 404);
+            }
+            data.client_id = client.id;
             for (const product of products) {
                 const productData = productsFound.find(p => p.product_id === product.id);
                 if (productData && productData.quantity > product.amount) {
@@ -40,14 +49,6 @@ export default class TransactionService {
             }, 0);
             data.amount = totalAmount ?? 0;
             return await this.send(data);
-        } catch (err) {
-            throw err;
-        }
-    }
-
-    private async create(data: any) {
-        try {
-            return await repository.create(data);
         } catch (err) {
             throw err;
         }
@@ -80,34 +81,26 @@ export default class TransactionService {
             const handler = handlers[gateway.name.trim().toLowerCase()];
             if (!handler) continue;
             try {
-                // Executa o handler do gateway e espera resposta
                 const gatewayResult = await handler(data);
-                // Supondo que o handler retorne o external_id ou id do gateway
-                // Cria a transação local
                 const transaction = await repository.create({
-                    client: ,
+                    client: data.client_id,
                     gateway: gateway.id,
                     external_id: gatewayResult?.id?? null,
                     status: 'aprovado',
                     amount: data.amount,
                     card_last_numbers: data.cardNumber?.slice(-4) ?? null,
                 });
-                // Cria os produtos da transação
-                for (const prod of data.products) {
-                    await import('../../../models/transaction_product.js').then(({ default: TransactionProduct }) => {
-                        return TransactionProduct.create({
-                            transaction_id: transaction.id,
-                            product_id: prod.product_id,
-                            quantity: prod.quantity,
-                        });
-                    });
-                }
+                await transactionProductRepository.createMany(data.products.map(prod => ({
+                    transaction_id: transaction.id,
+                    product_id: prod.product_id,
+                    quantity: prod.quantity,
+                })));
+
                 return { message: `Transação processada com sucesso pelo ${gateway.name}`, transaction_id: transaction.id };
             } catch (err) {
                 lastError = err;
             }
         }
-        console.error('Erro ao processar transação:', lastError);
         throw new ErrorResponse('Houve um erro ao processar a transação em todos os gateways, entre em contato com o suporte', 500);
     }
 
