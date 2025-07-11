@@ -16,7 +16,8 @@ export default class TransactionRepository {
         .where('id', id)
         .preload('products')
         .preload('clientModel')
-        .preload('gatewayModel');
+        .preload('gatewayModel')
+        .preload('transactionProducts');
       if (!transaction) {
         throw new ErrorResponse('Transação não encontrada', 404);
       }

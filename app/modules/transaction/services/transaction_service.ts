@@ -76,6 +76,18 @@ export default class TransactionService {
                 throw new ErrorResponse('Gateway de reembolso não suportado', 400);
             }
             const result = await handler(transaction.external_id);
+            const transactionProducts = transaction.transactionProducts;
+            const products = transaction.products;
+            if (Array.isArray(transactionProducts) && transactionProducts.length > 0) {
+                const stockUpdates = transactionProducts.map((t: any) => {
+                    const prod = products.find((p: any) => p.id === t.product_id);
+                    return {
+                        product_id: prod.id,
+                        newAmount: prod.amount + t.quantity
+                    };
+                });
+                await productRepository.updateStockMany(stockUpdates);
+            }
             await repository.update(transactionId, { status: 'reembolsado' });
             return { message: 'Reembolso realizado com sucesso', result };
         } catch (err) {

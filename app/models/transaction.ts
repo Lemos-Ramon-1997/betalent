@@ -1,8 +1,10 @@
-import { BaseModel, column, manyToMany, belongsTo } from '@adonisjs/lucid/orm';
+import { BaseModel, column, manyToMany, belongsTo, hasMany } from '@adonisjs/lucid/orm';
+import type { HasMany } from '@adonisjs/lucid/types/relations';
 import Gateway from './gateway.js';
 import { DateTime } from 'luxon';
 import Product from './product.js';
 import Client from './client.js';
+import TransactionProduct from './transaction_product.js';
 export default class Transaction extends BaseModel {
   @column({ isPrimary: true })
   public id!: number;
@@ -47,5 +49,10 @@ export default class Transaction extends BaseModel {
     foreignKey: 'gateway',
   })
   public gatewayModel: any;
+
+  @hasMany(() => TransactionProduct, {
+    foreignKey: 'transaction_id',
+  })
+  public transactionProducts!: HasMany<typeof TransactionProduct>;
 
 }
