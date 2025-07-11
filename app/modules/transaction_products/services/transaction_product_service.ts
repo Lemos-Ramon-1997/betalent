@@ -1,19 +1,21 @@
 import TransactionProductRepository from '../repositories/transaction_product_repository.js';
 
-export default class TransactionProductService {
-  private repository = new TransactionProductRepository();
+const repository = new TransactionProductRepository();
 
-  public async create(data: any) {
+export default class TransactionProductService {
+
+
+  async create(data: any) {
     try {
-      return await this.repository.create(data);
+      return await repository.create(data);
     } catch (err) {
       throw err;
     }
   }
 
-  public async findByTransaction(transaction_id: number) {
+  async findByTransaction(transaction_id: number) {
     try {
-      return await this.repository.findByTransaction(transaction_id);
+      return await repository.findByTransaction(transaction_id);
     } catch (err) {
       throw err;
     }

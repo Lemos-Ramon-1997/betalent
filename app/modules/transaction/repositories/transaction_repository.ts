@@ -2,7 +2,7 @@ import Transaction from '#models/transaction';
 import ErrorResponse from '../../../utils/error/error_handler.js';
 
 export default class TransactionRepository {
-  public async create(data: Partial<Transaction>) {
+  async create(data: Partial<Transaction>) {
     try {
       return await Transaction.create(data);
     } catch (err) {
@@ -10,7 +10,7 @@ export default class TransactionRepository {
     }
   }
 
-  public async findById(id: number) {
+  async findById(id: number) {
     try {
       return await Transaction.find(id);
     } catch (err) {
@@ -18,7 +18,7 @@ export default class TransactionRepository {
     }
   }
 
-  public async all() {
+  async all() {
     try {
       return await Transaction.all();
     } catch (err) {

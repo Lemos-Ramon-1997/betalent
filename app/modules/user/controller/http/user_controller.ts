@@ -3,6 +3,7 @@ import UserService from '../../services/user_service.js';
 import ErrorResponse from '../../../../utils/error/error_handler.js';
 import { userStoreValidator, userUpdateValidator } from '../../validators/user_validator.js';
 import { translateVineMessages } from '../../../../utils/error/translate_vine_messages.js';
+import * as helper from '../../../../utils/helper/helper.js';
 
 
 const userService = new UserService();
@@ -21,7 +22,8 @@ export default class UserController {
   }
 
   async store({ request }: HttpContext) {
-    try {
+    try { 
+      helper.checkRequiredParams(request, ['name', 'surname', 'email', 'role', 'password']);
       const data = await request.validateUsing(userStoreValidator);
       return await userService.create(data);
     } catch (err: any) {
@@ -39,6 +41,7 @@ export default class UserController {
 
   async show({ request }: HttpContext) {
     try {
+      helper.checkRequiredParams(request, ['id']);
       const { id } = request.only(['id']);
       return await userService.findOrFail(id);
     } catch (err) {
@@ -52,6 +55,7 @@ export default class UserController {
 
   async update({ request }: HttpContext) {
     try {
+      helper.checkRequiredParams(request, ['id']);
       const data = await request.validateUsing(userUpdateValidator);
       const { id, ...updateFields } = data;
       return await userService.update(id, updateFields);
@@ -70,6 +74,7 @@ export default class UserController {
 
   async destroy({ request }: HttpContext) {
     try {
+      helper.checkRequiredParams(request, ['id']);
       const { id } = request.only(['id']);
       return await userService.delete(id);
     } catch (err) {
