@@ -2,7 +2,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 import GatewayService from '../../services/gateway_service.js'
 import ErrorResponse from '../../../../utils/error/error_handler.js'
 import { gatewayStoreValidator, gatewayUpdateValidator } from '../../validators/gateway_validator.js';
-import { translateVineMessages } from '../../../../utils/translate_vine_messages.js';
+import { translateVineMessages } from '../../../../utils/error/translate_vine_messages.js';
 import * as helper from '../../../../utils/helper/helper.js';
 
 const gatewayService = new GatewayService()

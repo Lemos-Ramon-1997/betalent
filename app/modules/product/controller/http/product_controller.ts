@@ -3,7 +3,7 @@ import ProductService from '../../services/product_service.js';
 import ErrorResponse from '../../../../utils/error/error_handler.js';
 import * as helper from '../../../../utils/helper/helper.js';
 import { productStoreValidator, productUpdateValidator } from '../../validators/product_validator.js';
-import { translateVineMessages } from '../../../../utils/translate_vine_messages.js';
+import { translateVineMessages } from '../../../../utils/error/translate_vine_messages.js';
 
 
 const productService = new ProductService();

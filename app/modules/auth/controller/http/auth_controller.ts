@@ -2,7 +2,7 @@ import User from '#models/user';
 import { loginValidator, registerValidator } from '../../validators/auth.js';
 import type { HttpContext } from '@adonisjs/core/http';
 import ErrorResponse from '../../../../utils/error/error_handler.js';
-import { translateVineMessages } from '../../../../utils/translate_vine_messages.js';
+import { translateVineMessages } from '../../../../utils/error/translate_vine_messages.js';
 import * as helper from '../../../../utils/helper/helper.js';
 
 export default class AuthController {

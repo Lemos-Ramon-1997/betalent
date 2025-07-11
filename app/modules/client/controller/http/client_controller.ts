@@ -2,7 +2,7 @@ import type { HttpContext } from '@adonisjs/core/http';
 import ClientService from '../../services/client_service.js';
 import ErrorResponse from '../../../../utils/error/error_handler.js';
 import { clientStoreValidator, clientUpdateValidator } from '../../validators/client_validator.js';
-import { translateVineMessages } from '../../../../utils/translate_vine_messages.js';
+import { translateVineMessages } from '../../../../utils/error/translate_vine_messages.js';
 import * as helper from '../../../../utils/helper/helper.js';
 
 const clientService = new ClientService();
