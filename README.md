@@ -25,6 +25,10 @@ API RESTful para gerenciamento de pagamentos multi-gateway, clientes, produtos e
    ```powershell
    docker exec -it adonis_app node ace db:seed
    ```
+4. **Rode os testes:**
+   ```powershell
+   docker exec -it adonis_app npm run test
+   ```
 
 
 

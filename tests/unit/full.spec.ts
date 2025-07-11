@@ -303,7 +303,7 @@ test.group('Transaction', () => {
       .set('Authorization', `Bearer ${token}`)
       .send({
         name: 'Cliente Teste',
-        email: 'teste@gmail.com',
+        email: 'email@email.com',
         cardNumber: '5569000000006063',
         cvv: '010',
         products: [
@@ -333,7 +333,7 @@ test.group('Compra e Reembolso', () => {
       .set('Authorization', `Bearer ${token}`)
       .send({
         name: 'Cliente Teste',
-        email: 'teste@gmail.com',
+        email: 'email@email.com',
         cardNumber: '5569000000006063',
         cvv: '010',
         products: [
