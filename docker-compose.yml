@@ -7,8 +7,6 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: talent  
       MYSQL_DATABASE: app
-      MYSQL_USER: root
-      MYSQL_PASSWORD: talent
     ports:
       - "3306:3306"
     volumes:
@@ -57,10 +55,10 @@ services:
       DB_USER: root
       DB_PASSWORD: talent
       DB_DATABASE: app
-    volumes:
-      - ./:/app  
-      - /app/node_modules  
-    command: ["npm", "run", "dev"]  
+    # volumes:
+    #   - ./:/app  
+    #   - /app/node_modules  
+    command: ["node", "build/bin/server.js"]  
     depends_on:
       - mysql
       - gateways-mock

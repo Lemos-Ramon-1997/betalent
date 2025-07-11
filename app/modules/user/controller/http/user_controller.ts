@@ -25,10 +25,8 @@ export default class UserController {
     try { 
       helper.checkRequiredParams(request, ['name', 'surname', 'email', 'role', 'password']);
       const data = await request.validateUsing(userStoreValidator);
-      console.log('Creating user with data:', data);
       return await userService.create(data);
     } catch (err: any) {
-      console.error(err);
       if (err?.status === 422 && err?.code === 'E_VALIDATION_ERROR') {
         const mensagens = translateVineMessages(err.messages);
         throw new ErrorResponse(mensagens, 422);
