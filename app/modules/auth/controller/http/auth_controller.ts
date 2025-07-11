@@ -17,7 +17,11 @@ export default class AuthController {
         const mensagens = translateVineMessages(err.messages);
         throw new ErrorResponse(mensagens, 422);
       }
-      throw new ErrorResponse('Erro ao registrar usuário', 500);
+      if (err instanceof ErrorResponse) {
+        throw err;
+      } else {
+        throw new ErrorResponse('Erro interno');
+      }
     }
  
   }
@@ -33,7 +37,11 @@ export default class AuthController {
         const mensagens = translateVineMessages(err.messages);
         throw new ErrorResponse(mensagens, 422);
       }
-      throw new ErrorResponse('Erro ao fazer login', 401);
+      if (err instanceof ErrorResponse) {
+        throw err;
+      } else {
+        throw new ErrorResponse('Erro ao fazer login', 500);
+      }
     }
   }
 
