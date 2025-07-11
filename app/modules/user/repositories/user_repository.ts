@@ -33,6 +33,12 @@ export default class UserRepository {
   async update(id: number, data: Partial<User>) {
     try {
       const user = await this.findOrFail(id);
+      if (data.email && data.email !== user.email) {
+        const existingUser = await User.query().where('email', data.email).first();
+        if (existingUser && existingUser.id !== id) {
+          throw new ErrorResponse('Email já cadastrado', 422);
+        }
+      }
       user.merge(data);
       await user.save();
       return user;

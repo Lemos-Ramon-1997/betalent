@@ -50,6 +50,12 @@ export default class ClientRepository {
   async update(id: number, data: Partial<Client>) {
     try {
       const client = await this.findOrFail(id);
+      if (data.email && data.email !== client.email) {
+        const existingClient = await Client.query().where('email', data.email).first();
+        if (existingClient && existingClient.id !== id) {
+          throw new ErrorResponse('Email já cadastrado', 422);
+        }
+      }
       client.merge(data);
       await client.save();
       return client;
