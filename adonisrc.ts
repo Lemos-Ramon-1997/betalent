@@ -1,6 +1,7 @@
 import { defineConfig } from '@adonisjs/core/app'
 
 export default defineConfig({
+  metaFiles: ['.env'],
   /*
   |--------------------------------------------------------------------------
   | Experimental flags
@@ -83,4 +84,6 @@ export default defineConfig({
     ],
     forceExit: false,
   },
+
+ 
 })
