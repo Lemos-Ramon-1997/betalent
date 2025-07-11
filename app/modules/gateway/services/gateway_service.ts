@@ -88,6 +88,7 @@ export default class GatewayService {
             if (!transactionRes?.data?.id) {
                 throw new Error('Falha ao criar transação no gateway 1');
             }
+            return transactionRes.data;
         } catch (err) {
             throw err;
         }
@@ -117,6 +118,7 @@ export default class GatewayService {
         if (!transactionRes?.data?.id) {
             throw new Error('Falha ao criar transação no gateway 2');
         }
+        return transactionRes.data;
     } catch (err) {
         console.error('Erro ao enviar requisição para o segundo serviço:', err);
         throw err;
