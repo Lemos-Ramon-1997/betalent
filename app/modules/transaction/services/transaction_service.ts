@@ -19,6 +19,7 @@ export interface CreateTransactionDTO {
   cvv: string;
   products: TransactionProduct[];
   client_id?: number;
+  updatedStocks?: { product_id: number; newAmount: number }[];
 }
 
 const repository = new TransactionRepository();
@@ -33,16 +34,22 @@ export default class TransactionService {
         try {
             const products = await productRepository.findAllOrFail(productsFound.map(p => p.product_id));
             const client = await clientRepository.findByEmail(data.email);
-            if (!client) {
-                throw new ErrorResponse('Cliente não encontrado, por favor verifique os dados informados.', 404);
-            }
             data.client_id = client.id;
+            const updatedStocks: { product_id: number, newAmount: number }[] = [];
             for (const product of products) {
+                if (product.amount <= 0) {
+                    throw new ErrorResponse('Quantidade do produto não pode ser negativa', 422);
+                }
                 const productData = productsFound.find(p => p.product_id === product.id);
+                if (!productData) {
+                    throw new ErrorResponse(`Produto '${product.name}' não encontrado`, 404);
+                }
                 if (productData && productData.quantity > product.amount) {
                     throw new ErrorResponse(`Estoque insuficiente para o produto '${product.name}'. Disponível: ${product.amount}, solicitado: ${productData.quantity}`, 422);
                 }
+                updatedStocks.push({ product_id: product.id, newAmount: product.amount - productData.quantity });
             }
+            data.updatedStocks = updatedStocks;
             const totalAmount = products.reduce((total, product) => {
                 const productData = productsFound.find(p => p.product_id === product.id);
                 return total + (productData?.quantity || 0) * product.price;
@@ -95,7 +102,7 @@ export default class TransactionService {
                     product_id: prod.product_id,
                     quantity: prod.quantity,
                 })));
-
+                await productRepository.updateStockMany(data.updatedStocks!);
                 return { message: `Transação processada com sucesso pelo ${gateway.name}`, transaction_id: transaction.id };
             } catch (err) {
                 lastError = err;

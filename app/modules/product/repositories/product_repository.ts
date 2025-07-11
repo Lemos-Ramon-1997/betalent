@@ -62,4 +62,17 @@ export default class ProductRepository {
       throw err;
     }
   }
+  
+  async updateStockMany(updatedStocks: { product_id: number; newAmount: number }[]) {
+    try {
+      for (const stock of updatedStocks) {
+        const product = await this.findOrFail(stock.product_id);
+        product.amount = stock.newAmount;
+        await product.save();
+      }
+      return { message: 'Estoque atualizado com sucesso' };
+    } catch (err) {
+      throw err;
+    }
+  }
 }

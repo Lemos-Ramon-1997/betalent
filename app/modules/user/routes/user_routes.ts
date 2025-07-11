@@ -1,8 +1,8 @@
 
-import router from '@adonisjs/core/services/router'
-import UserController from '../controller/http/user_controller.js'
-import { middleware } from '../../../../start/kernel.js'
-import role from '../../../middleware/role.js'
+import router from '@adonisjs/core/services/router';
+import UserController from '../controller/http/user_controller.js';
+import { middleware } from '../../../../start/kernel.js';
+import role from '../../../middleware/role.js';
 
 router.group(() => {
   router.get('/', [UserController, 'index']).use(role(['ADMIN', 'MANAGER']))

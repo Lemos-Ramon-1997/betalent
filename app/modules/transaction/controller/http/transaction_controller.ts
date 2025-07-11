@@ -39,7 +39,6 @@ export default class TransactionController {
             const data = await request.validateUsing(transactionStoreValidator);
             return await transactionService.processPurchase(data, data.products);
         } catch (err: any) {
-            console.error('Error creating transaction:', err);
             if (err?.status === 422 && err?.code === 'E_VALIDATION_ERROR') {
                 throw new ErrorResponse('Dados inválidos', 422);
             }
