@@ -1,0 +1,37 @@
+version: '3.8'
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql_adonis
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: talent  # Senha para o usuário root
+      MYSQL_DATABASE: app         # Database criado automaticamente
+      # Removi MYSQL_USER e MYSQL_PASSWORD pois não são necessários para root
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin_adonis
+    restart: always
+    environment:
+      PMA_HOST: mysql
+      PMA_PASSWORD: talent  # Aqui usa a mesma senha do root
+    ports:
+      - "8080:80"
+    depends_on:
+      - mysql
+
+  gateways-mock:
+    image: matheusprotzen/gateways-mock
+    container_name: gateways_mock
+    restart: always
+    ports:
+      - "3001:3001"
+      - "3002:3002"
+
+volumes:
+  mysql_data:
