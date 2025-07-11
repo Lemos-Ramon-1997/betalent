@@ -1,5 +1,6 @@
-import { BaseModel, column, } from '@adonisjs/lucid/orm';
+import { BaseModel, column, manyToMany } from '@adonisjs/lucid/orm';
 import { DateTime } from 'luxon';
+import Product from './product.js';
 export default class Transaction extends BaseModel {
   @column({ isPrimary: true })
   public id!: number;
@@ -23,6 +24,15 @@ export default class Transaction extends BaseModel {
   public card_last_numbers!: string;
 
   @column.dateTime({ autoCreate: true })
-  declare created_at: DateTime;
+  declare createdAt: DateTime;
+
+  @manyToMany(() => Product, {
+    pivotTable: 'transaction_products',
+    localKey: 'id',
+    pivotForeignKey: 'transaction_id',
+    relatedKey: 'id',
+    pivotRelatedForeignKey: 'product_id',
+  })
+  public products: any;
 
 }

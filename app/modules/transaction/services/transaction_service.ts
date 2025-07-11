@@ -37,16 +37,16 @@ export default class TransactionService {
             data.client_id = client.id;
             const updatedStocks: { product_id: number, newAmount: number }[] = [];
             for (const product of products) {
-                // if (product.amount <= 0) {
-                //     throw new ErrorResponse('Quantidade do produto não pode ser negativa', 422);
-                // }
+                if (product.amount <= 0) {
+                    throw new ErrorResponse('Quantidade do produto não pode ser negativa', 422);
+                }
                 const productData = productsFound.find(p => p.product_id === product.id);
                 if (!productData) {
                     throw new ErrorResponse(`Produto '${product.name}' não encontrado`, 404);
                 }
-                // if (productData && productData.quantity > product.amount) {
-                //     throw new ErrorResponse(`Estoque insuficiente para o produto '${product.name}'. Disponível: ${product.amount}, solicitado: ${productData.quantity}`, 422);
-                // }
+                if (productData && productData.quantity > product.amount) {
+                    throw new ErrorResponse(`Estoque insuficiente para o produto '${product.name}'. Disponível: ${product.amount}, solicitado: ${productData.quantity}`, 422);
+                }
                 updatedStocks.push({ product_id: product.id, newAmount: product.amount - productData.quantity });
             }
             data.updatedStocks = updatedStocks;
@@ -102,12 +102,13 @@ export default class TransactionService {
                     product_id: prod.product_id,
                     quantity: prod.quantity,
                 })));
-                //await productRepository.updateStockMany(data.updatedStocks!);
+                await productRepository.updateStockMany(data.updatedStocks!);
                 return { message: `Transação processada com sucesso pelo ${gateway.name}`, transaction_id: transaction.id };
             } catch (err) {
                 lastError = err;
             }
         }
+        console.error('Erro ao processar transação:', lastError);
         throw new ErrorResponse('Houve um erro ao processar a transação em todos os gateways, entre em contato com o suporte', 500);
     }
 

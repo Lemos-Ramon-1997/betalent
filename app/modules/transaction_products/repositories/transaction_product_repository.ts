@@ -22,6 +22,7 @@ export default class TransactionProductRepository {
         try {
             return await TransactionProduct.createMany(products);
         } catch (err) {
+            console.error('Erro ao criar múltiplos produtos da transação:', err);
             throw new ErrorResponse('Erro ao criar múltiplos produtos da transação', 500);
         }
     }

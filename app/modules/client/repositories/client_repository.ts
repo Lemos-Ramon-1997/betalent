@@ -14,7 +14,9 @@ export default class ClientRepository {
     try {
       const client = await Client.query()
         .where('id', id)
-        .preload('transactions')
+        .preload('transactions', (transactionQuery) => {
+          transactionQuery.preload('products');
+        })
         .first();
       if (!client) {
         throw new ErrorResponse('Cliente não encontrado', 404);

@@ -12,7 +12,7 @@ export default class extends BaseSchema {
       table.string('status').notNullable()
       table.decimal('amount', 10, 2).notNullable()
       table.string('card_last_numbers', 4).notNullable()
-      table.timestamps(true)
+      table.timestamp('created_at').notNullable()
     })
   }
 
