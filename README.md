@@ -10,33 +10,28 @@ API RESTful para gerenciamento de pagamentos multi-gateway, clientes, produtos e
 
 ## 📦 Como rodar o projeto
 
-1. **Clone o repositório:**
-   ```powershell
-   git clone <url-do-repositorio>
-   cd <nome-da-pasta>
-   ```
 
-2. **Suba o ambiente Docker:**
+1. **Suba o ambiente Docker:**
    ```powershell
    docker-compose up -d
    ```
 
-3. **Instale as dependências:**
+2. **Instale as dependências:**
    ```powershell
    npm install
    ```
 
-4. **Rode as migrations:**
+3. **Rode as migrations:**
    ```powershell
    node ace migration:run
    ```
 
-5. **(Opcional) Rode os seeders:**
+4. **(Opcional) Rode os seeders:**
    ```powershell
    node ace db:seed
    ```
 
-6. **Inicie o servidor:**
+5. **Inicie o servidor:**
    ```powershell
    node ace serve --watch
    ```
@@ -50,30 +45,6 @@ API RESTful para gerenciamento de pagamentos multi-gateway, clientes, produtos e
 - transactions: client, gateway, external_id, status, amount, card_last_numbers
 - transaction_products: transaction_id, product_id, quantity
 
-## 🛣 Rotas do Sistema
-
-### Rotas Públicas
-- `POST /login` — Login de usuário
-- `POST /transactions` — Realizar uma compra (multi-gateway)
-
-### Rotas Privadas (JWT)
-- `GET /users` — Listar usuários (ADMIN, MANAGER)
-- `POST /users` — Criar usuário (ADMIN, MANAGER)
-- `PUT /users/:id` — Atualizar usuário (ADMIN, MANAGER)
-- `DELETE /users/:id` — Remover usuário (ADMIN)
-- `GET /products` — Listar produtos (ADMIN, MANAGER, FINANCE)
-- `POST /products` — Criar produto (ADMIN, MANAGER, FINANCE)
-- `PUT /products/:id` — Atualizar produto (ADMIN, MANAGER, FINANCE)
-- `DELETE /products/:id` — Remover produto (ADMIN, MANAGER)
-- `GET /clients` — Listar clientes (ADMIN, MANAGER, FINANCE)
-- `GET /clients/:id` — Detalhe do cliente + compras (ADMIN, MANAGER, FINANCE)
-- `GET /transactions` — Listar todas as compras (ADMIN, MANAGER, FINANCE)
-- `GET /transactions/:id` — Detalhes de uma compra (ADMIN, MANAGER, FINANCE)
-- `POST /transactions/:id/refund` — Reembolso (FINANCE)
-- `PATCH /gateways/:id/activate` — Ativar/desativar gateway (ADMIN)
-- `PATCH /gateways/:id/priority` — Alterar prioridade do gateway (ADMIN)
-
-> Todas as rotas privadas exigem autenticação e validação de role.
 
 ## 🛡️ Roles
 
@@ -111,12 +82,37 @@ node ace db:seed
 node ace serve --watch
 ```
 
+
 ## 📚 Observações
 
 - Todas as validações são feitas com VineJS.
 - Mensagens de erro são retornadas em português.
 - O sistema está pronto para adicionar novos gateways de forma modular.
 - O fallback entre gateways segue a ordem de prioridade configurada.
+
+
+## 📝 Coleção Postman
+
+Incluí a coleção Postman no repositório para facilitar os testes das rotas e integrações. Basta importar o arquivo `betalent.postman_collection.json` no Postman e utilizar os exemplos prontos para cada endpoint.
+
+---
+
+## 📝 Cadastro do ADMIN
+
+O seeder de usuário ADMIN apresente erro de hash, utilize a rota abaixo para cadastrar manualmente:
+
+- `POST /auth/register` — Cadastro de usuário ADMIN
+
+Exemplo de payload:
+```json
+{
+  "name": "Novo",
+  "surname": "Usuário",
+  "email": "email@email.com",
+  "password": "12345678",
+  "role": "ADMIN"
+}
+```
 
 ---
 
