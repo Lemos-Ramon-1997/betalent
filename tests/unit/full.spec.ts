@@ -1,7 +1,7 @@
 import { test } from '@japa/runner'
 import supertest from 'supertest'
 
-const app = 'http://localhost:4000'
+const app = 'http://localhost:3333'
 
 // Helper function para obter token
 async function getAuthToken() {
