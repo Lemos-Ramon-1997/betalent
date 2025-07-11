@@ -12,10 +12,15 @@ export default class TransactionRepository {
 
   async findById(id: number) {
     try {
-      return await Transaction.query()
+      const transaction = await Transaction.query()
         .where('id', id)
         .preload('products')
-        .preload('clientModel');
+        .preload('clientModel')
+        .preload('gatewayModel');
+      if (!transaction) {
+        throw new ErrorResponse('Transação não encontrada', 404);
+      }
+      return transaction[0];
     } catch (err) {
       throw new ErrorResponse('Erro ao buscar transação', 500);
     }

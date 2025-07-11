@@ -50,4 +50,18 @@ export default class TransactionController {
         }
     }
 
+    async refund({ request }: HttpContext) {
+        try {
+            helper.checkRequiredParams(request, ['id']);
+            const { id } = request.only(['id']);
+            return await transactionService.refund(id);
+        } catch (err) {
+            if (err instanceof ErrorResponse) {
+                throw err;
+            } else {
+                throw new ErrorResponse('Erro interno');
+            }
+        }
+    }
+
 }

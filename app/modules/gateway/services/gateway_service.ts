@@ -57,6 +57,52 @@ export default class GatewayService {
       throw err;
      }
   }
+  
+  async refund_gateway_1(externalId: string) {
+    try {
+      const GATEWAY1_URL = process.env.GATEWAY1_URL;
+      const GATEWAY1_LOGIN = process.env.GATEWAY1_LOGIN;
+      const GATEWAY1_EMAIL = process.env.GATEWAY1_EMAIL;
+      const GATEWAY1_TOKEN = process.env.GATEWAY1_TOKEN;
+      const loginRes = await axios.post(`${GATEWAY1_URL}${GATEWAY1_LOGIN}`, {
+        email: GATEWAY1_EMAIL,
+        token: GATEWAY1_TOKEN
+      });
+      const token = loginRes.data.token;
+      const refundRes = await axios.post(
+        `${GATEWAY1_URL}/transactions/${externalId}/charge_back`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+      return refundRes.data;
+    } catch (err) {
+      throw err;
+    }
+  }
+  
+  async refund_gateway_2(externalId: string) {
+    try {
+      const GATEWAY2_URL = process.env.GATEWAY2_URL;
+      const GATEWAY2_TOKEN = process.env.GATEWAY2_TOKEN;
+      const GATEWAY2_SECRET = process.env.GATEWAY2_SECRET;
+      const headers = {
+        'Gateway-Auth-Token': GATEWAY2_TOKEN,
+        'Gateway-Auth-Secret': GATEWAY2_SECRET,
+      };
+      const refundRes = await axios.post(
+        `${GATEWAY2_URL}/transacoes/reembolso`,
+        { id: externalId },
+        { headers }
+      );
+      return refundRes.data;
+    } catch (err) {
+      throw err;
+    }
+  }
 
   async gateway_1(data: CreateTransactionDTO) {
     try {

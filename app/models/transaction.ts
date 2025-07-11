@@ -1,4 +1,5 @@
 import { BaseModel, column, manyToMany, belongsTo } from '@adonisjs/lucid/orm';
+import Gateway from './gateway.js';
 import { DateTime } from 'luxon';
 import Product from './product.js';
 import Client from './client.js';
@@ -41,5 +42,10 @@ export default class Transaction extends BaseModel {
     foreignKey: 'client',
   })
   public clientModel: any;
+
+  @belongsTo(() => Gateway, {
+    foreignKey: 'gateway',
+  })
+  public gatewayModel: any;
 
 }

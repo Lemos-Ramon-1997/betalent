@@ -60,12 +60,36 @@ export default class TransactionService {
             throw err;
         }
     }
+    
+    async refund(transactionId: number) {
+        try {
+            const transaction = await repository.findById(transactionId);
+            if (transaction.status !== 'aprovado') {
+                throw new ErrorResponse('Transação não pode ser reembolsada', 400);
+            }
+            const refundHandlers: Record<string, (externalId: string) => Promise<any>> = {
+                'gateway 1': gatewayService.refund_gateway_1,
+                'gateway 2': gatewayService.refund_gateway_2,
+            };
+            console.log('teste')
+            const handler = refundHandlers[transaction.gatewayModel.name.trim().toLowerCase()];
+            if (!handler) {
+                throw new ErrorResponse('Gateway de reembolso não suportado', 400);
+            }
+            const result = await handler(transaction.external_id);
+            //transaction.status = 'reembolsado';
+            //await transaction.save();
+            return { message: 'Reembolso realizado com sucesso', result };
+        } catch (err) {
+            throw new ErrorResponse('Erro ao processar reembolso', 500);
+        }
+    }
 
     async findById(id: number) {
         try {
-        return await repository.findById(id);
+            return await repository.findById(id);
         } catch (err) {
-        throw err;
+            throw err;
         }
     }
 
@@ -97,12 +121,14 @@ export default class TransactionService {
                     amount: data.amount,
                     card_last_numbers: data.cardNumber?.slice(-4) ?? null,
                 });
-                await transactionProductRepository.createMany(data.products.map(prod => ({
-                    transaction_id: transaction.id,
-                    product_id: prod.product_id,
-                    quantity: prod.quantity,
-                })));
-                await productRepository.updateStockMany(data.updatedStocks!);
+                await Promise.all([
+                    transactionProductRepository.createMany(data.products.map(prod => ({
+                        transaction_id: transaction.id,
+                        product_id: prod.product_id,
+                        quantity: prod.quantity,
+                    }))),       
+                    productRepository.updateStockMany(data.updatedStocks!)
+                ]);
                 return { message: `Transação processada com sucesso pelo ${gateway.name}`, transaction_id: transaction.id };
             } catch (err) {
                 lastError = err;
