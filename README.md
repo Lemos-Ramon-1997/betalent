@@ -4,37 +4,29 @@
 API RESTful para gerenciamento de pagamentos multi-gateway, clientes, produtos e usuários, com autenticação, roles, fallback de gateways e integração pronta para TDD e Docker Compose.
 
 ## 🚀 Requisitos
-- Node.js >= 18
 - Docker e Docker Compose
-- MySQL
 
 ## 📦 Como rodar o projeto
 
 
+
 1. **Suba o ambiente Docker:**
    ```powershell
-   docker-compose up -d
+   docker-compose up --build -d
    ```
 
-2. **Instale as dependências:**
-   ```powershell
-   npm install
-   ```
-
-3. **Rode as migrations:**
+2. **Rode as migrations:**
    ```powershell
    node ace migration:run
    ```
 
-4. **(Opcional) Rode os seeders:**
+3. **(Opcional) Rode os seeders:**
+   > Este comando irá adicionar os gateways, dois produtos e um cliente de exemplo.
    ```powershell
    node ace db:seed
    ```
 
-5. **Inicie o servidor:**
-   ```powershell
-   node ace serve --watch
-   ```
+
 
 ## 🗄 Estrutura do Banco de Dados
 
@@ -45,6 +37,11 @@ API RESTful para gerenciamento de pagamentos multi-gateway, clientes, produtos e
 - transactions: client, gateway, external_id, status, amount, card_last_numbers
 - transaction_products: transaction_id, product_id, quantity
 
+## 🛣 Rotas do Sistema
+
+
+
+> Todas as rotas privadas exigem autenticação e validação de role.
 
 ## 🛡️ Roles
 
@@ -66,22 +63,6 @@ O projeto já inclui um `docker-compose.yml` com:
 - Aplicação Node.js
 - Mocks dos gateways (ajuste as portas/endpoints conforme necessário)
 
-## 🛠️ Comandos Úteis
-
-```powershell
-# Rodar migrations
-node ace migration:run
-
-# Reverter migrations
-node ace migration:rollback
-
-# Rodar seeders
-node ace db:seed
-
-# Iniciar servidor em modo dev
-node ace serve --watch
-```
-
 
 ## 📚 Observações
 
@@ -90,16 +71,9 @@ node ace serve --watch
 - O sistema está pronto para adicionar novos gateways de forma modular.
 - O fallback entre gateways segue a ordem de prioridade configurada.
 
-
-## 📝 Coleção Postman
-
-Incluí a coleção Postman no repositório para facilitar os testes das rotas e integrações. Basta importar o arquivo `betalent.postman_collection.json` no Postman e utilizar os exemplos prontos para cada endpoint.
-
----
-
 ## 📝 Cadastro do ADMIN
 
-O seeder de usuário ADMIN apresente erro de hash, utilize a rota abaixo para cadastrar manualmente:
+O seeder de usuário ADMIN está apresentando erro de hash, utilize a rota abaixo para cadastrar manualmente:
 
 - `POST /auth/register` — Cadastro de usuário ADMIN
 
@@ -113,7 +87,7 @@ Exemplo de payload:
   "role": "ADMIN"
 }
 ```
-
+> A coleção JSON de rotas está incluída no projeto. Importe o arquivo no Postman ou Insomnia para facilitar os testes dos endpoints.
 ---
 
 MIT
