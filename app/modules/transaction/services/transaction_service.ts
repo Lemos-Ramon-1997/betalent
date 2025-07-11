@@ -65,7 +65,6 @@ export default class TransactionService {
     }
 
     private async send(data: CreateTransactionDTO) {
-        console.log('Dados da transação:', data);
         try {
             try {
                 await this.sendRequestOne(data);
@@ -73,7 +72,7 @@ export default class TransactionService {
                 try {
                     console.error('Erro ao enviar requisição para o primeiro serviço, tentando o segundo:');
                     await this.sendRequestSecond(data);
-                }catch (err) {
+                } catch (err) {
                     throw err;
                 }
             }
@@ -109,53 +108,37 @@ export default class TransactionService {
                     }
                 }
             );
-            console.log('Transação criada:', transactionRes.data);
+            if (!transactionRes?.data?.id) {
+                throw Error;
+            }
         } catch (err) {
-            console.error('Erro ao enviar requisição:', err);
             throw err;
         }
     }
 
-  private async sendRequestSecond() {
+  private async sendRequestSecond(data: CreateTransactionDTO) {
     try {
-      const loginRes = await axios.post('http://localhost:3333/login', {
-        email: 'dev@betalent.tech',
-        token: 'FEC9BB078BF338F464F96B48089EB498'
-      });
-      const token = loginRes.data.token; // ajuste conforme o retorno real
-
-      // 2. Criar uma transação autenticada
-      const transactionRes = await axios.post(
-        'http://localhost:3333/transactions',
-        {
-          amount: 1000,
-          name: 'tester',
-          email: 'tester@email.com',
-          cardNumber: '5569000000006063',
-          cvv: '010',
-          products: [
-            { product_id: 1, quantity: 2 }
-          ]
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
+        const headers = {
+            'Gateway-Auth-Token': 'tk_f2198cc671b5289fa856',
+            'Gateway-Auth-Secret': '3d15e8ed6131446ea7e3456728b1211f',
+        };
+        const transactionRes = await axios.post(
+            'http://localhost:3002/transacoes',
+            {
+                valor: data.amount,
+                nome: data.name,
+                email: data.email,
+                numeroCartao: data.cardNumber,
+                cvv: data.cvv,
+            },
+            { headers }
+        );
+        if (!transactionRes?.data?.id) {
+            throw Error;
         }
-      );
-      console.log('Transação criada:', transactionRes.data);
-
-      // 3. Listar transações autenticado
-      const listRes = await axios.get('http://localhost:3333/transactions', {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-      console.log('Transações:', listRes.data);
-
-      return { transaction: transactionRes.data, list: listRes.data };
     } catch (err) {
-      throw err;
+        console.error('Erro ao enviar requisição para o segundo serviço:', err);
+        throw err;
     }
   }
 
