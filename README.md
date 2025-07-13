@@ -27,6 +27,14 @@ API RESTful para gerenciamento de pagamentos multi-gateway, clientes, produtos e
    ```
 4. **Rode os testes:**
    ```powershell
+   Para os testes rodar bem, precisa adicioanr o usuário admin
+   {
+   "name": "Novo",
+   "surname": "Usuário",
+   "email": "email@email.com",
+   "password": "12345678",
+   "role": "ADMIN"
+   }
    docker exec -it adonis_app npm run test
    ```
 
@@ -53,12 +61,6 @@ API RESTful para gerenciamento de pagamentos multi-gateway, clientes, produtos e
 - **MANAGER**: gerencia produtos e usuários
 - **FINANCE**: gerencia produtos e realiza reembolso
 - **USER**: acesso restrito ao próprio uso
-
-## 🧪 Testes
-
-```powershell
-npm run test
-```
 
 ## 🐳 Docker Compose
 
